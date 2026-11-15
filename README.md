@@ -1,6 +1,6 @@
 # Ghostcut
 
-A small video editor built for cutting game trailers and devlogs.
+A small video editor for narrated videos — trailers, devlogs, tutorials, anything with a voice over it.
 
 **The idea:** in a regular editor, trimming a clip hides what you cut away. Ghostcut keeps it visible.
 
