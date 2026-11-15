@@ -1,0 +1,110 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:tl="using:Ghostcut.App.Timeline"
+        x:Class="Ghostcut.App.MainWindow"
+        Title="Ghostcut"
+        Width="1400" Height="900"
+        MinWidth="900" MinHeight="600"
+        Background="#16171A">
+  <DockPanel>
+    <Menu DockPanel.Dock="Top">
+      <MenuItem Header="_File">
+        <MenuItem Header="_New" InputGesture="Ctrl+N" Click="OnNew" />
+        <MenuItem Header="_Open…" InputGesture="Ctrl+O" Click="OnOpen" />
+        <MenuItem Header="_Save" InputGesture="Ctrl+S" Click="OnSave" />
+        <MenuItem Header="Save _As…" InputGesture="Ctrl+Shift+S" Click="OnSaveAs" />
+        <MenuItem Header="Recover _Autosave" Click="OnRecoverAutosave" />
+        <Separator />
+        <MenuItem Header="_Import Media…" InputGesture="Ctrl+I" Click="OnImport" />
+        <MenuItem Header="_Export MP4…" InputGesture="Ctrl+E" Click="OnExport" />
+        <Separator />
+        <MenuItem Header="E_xit" Click="OnExit" />
+      </MenuItem>
+      <MenuItem Header="_Edit">
+        <MenuItem x:Name="UndoItem" Header="_Undo" InputGesture="Ctrl+Z" Click="OnUndo" />
+        <MenuItem x:Name="RedoItem" Header="_Redo" InputGesture="Ctrl+Y" Click="OnRedo" />
+        <Separator />
+        <MenuItem Header="_Split at Playhead" InputGesture="S" Click="OnSplit" />
+        <MenuItem Header="_Delete Clip" InputGesture="Delete" Click="OnDelete" />
+      </MenuItem>
+      <MenuItem Header="_Track">
+        <MenuItem Header="Add _Voice Track" Click="OnAddVoiceTrack" />
+        <MenuItem Header="Add _Music Track" Click="OnAddMusicTrack" />
+      </MenuItem>
+      <MenuItem Header="_View">
+        <MenuItem Header="Zoom _In" InputGesture="Ctrl+OemPlus" Click="OnZoomIn" />
+        <MenuItem Header="Zoom _Out" InputGesture="Ctrl+OemMinus" Click="OnZoomOut" />
+        <MenuItem Header="Zoom to _Fit" InputGesture="Ctrl+D0" Click="OnZoomFit" />
+      </MenuItem>
+    </Menu>
+
+    <Border DockPanel.Dock="Bottom" Background="#202226" Padding="10,4">
+      <TextBlock x:Name="StatusText" Foreground="#B8BCC4" FontSize="12" Text="Drop video and audio files onto the timeline." />
+    </Border>
+
+    <Grid RowDefinitions="*,6,320">
+      <Grid Grid.Row="0" ColumnDefinitions="*,290">
+        <DockPanel Grid.Column="0" Margin="8,8,4,4">
+          <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" Spacing="6" Margin="0,6,0,0">
+            <Button x:Name="PlayButton" Content="▶ Play" Width="90" Focusable="False" Click="OnPlayPause" />
+            <Button Content="Split (S)" Focusable="False" Click="OnSplit" />
+            <Button Content="Delete" Focusable="False" Click="OnDelete" />
+            <Button Content="Undo" Focusable="False" Click="OnUndo" />
+            <Button Content="Redo" Focusable="False" Click="OnRedo" />
+            <Button Content="+ Voice" Focusable="False" Click="OnAddVoiceTrack" />
+            <Button Content="+ Music" Focusable="False" Click="OnAddMusicTrack" />
+            <Button Content="Fit" Focusable="False" Click="OnZoomFit" />
+            <Button Content="Export…" Focusable="False" Click="OnExport" />
+            <TextBlock x:Name="TimecodeText" VerticalAlignment="Center" Margin="12,0,0,0" FontFamily="Consolas,monospace" FontSize="14" Text="0:00.000" />
+          </StackPanel>
+          <Border Background="Black" CornerRadius="2" ClipToBounds="True">
+            <Grid>
+              <Image x:Name="PreviewImage" Stretch="Uniform" />
+              <Border x:Name="FadeOverlay" Background="Black" Opacity="0" IsHitTestVisible="False" />
+              <TextBlock x:Name="PreviewHint" HorizontalAlignment="Center" VerticalAlignment="Center"
+                         Foreground="#6B6F76" Text="Preview" />
+            </Grid>
+          </Border>
+        </DockPanel>
+
+        <Border Grid.Column="1" Background="#1F2124" Margin="4,8,8,4" CornerRadius="2" Padding="12">
+          <ScrollViewer HorizontalScrollBarVisibility="Disabled">
+            <StackPanel Spacing="8" Margin="0,0,14,0">
+              <TextBlock Text="Clip" FontWeight="Bold" FontSize="14" />
+              <TextBlock x:Name="ClipName" Text="No clip selected" TextWrapping="Wrap" Foreground="#B8BCC4" />
+              <TextBlock x:Name="ClipRange" Foreground="#9DA1A8" FontSize="12" TextWrapping="Wrap" />
+              <StackPanel x:Name="ClipEditor" Spacing="8" IsEnabled="False">
+                <TextBlock Text="Volume (dB)" FontSize="12" />
+                <Grid ColumnDefinitions="*,60">
+                  <Slider x:Name="GainSlider" Minimum="-40" Maximum="12" TickFrequency="1" />
+                  <TextBlock x:Name="GainText" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Right" Text="0.0" />
+                </Grid>
+                <StackPanel x:Name="FadePanel" Spacing="8">
+                  <TextBlock Text="Fade from black (s)" FontSize="12" />
+                  <NumericUpDown x:Name="FadeInBox" Minimum="0" Maximum="10" Increment="0.25" FormatString="0.00" />
+                  <TextBlock Text="Fade to black (s)" FontSize="12" />
+                  <NumericUpDown x:Name="FadeOutBox" Minimum="0" Maximum="10" Increment="0.25" FormatString="0.00" />
+                </StackPanel>
+              </StackPanel>
+              <Separator Margin="0,8" />
+              <TextBlock Text="Project" FontWeight="Bold" FontSize="14" />
+              <TextBlock Text="Audio edge fade (ms)" FontSize="12" />
+              <NumericUpDown x:Name="EdgeFadeBox" Minimum="0" Maximum="500" Increment="5" FormatString="0" />
+              <TextBlock Foreground="#7D818A" FontSize="11" TextWrapping="Wrap"
+                         Text="Applied automatically at every audio clip edge. At a cut, both clips crossfade using their overhang material." />
+              <Separator Margin="0,8" />
+              <TextBlock Foreground="#7D818A" FontSize="11" TextWrapping="Wrap"
+                         Text="Space play/pause · S split · Del delete · Ctrl+Z/Y undo/redo · Ctrl+wheel zoom · wheel scroll · Esc cancel drag · ←/→ one frame" />
+            </StackPanel>
+          </ScrollViewer>
+        </Border>
+      </Grid>
+
+      <GridSplitter Grid.Row="1" Background="#2A2C31" ResizeDirection="Rows" />
+
+      <ScrollViewer Grid.Row="2" x:Name="TimelineScroll" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+        <tl:TimelineControl x:Name="Timeline" />
+      </ScrollViewer>
+    </Grid>
+  </DockPanel>
+</Window>
