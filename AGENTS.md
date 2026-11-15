@@ -1,135 +1,133 @@
 # Ghostcut — Agent Project Context
 
-Diese Datei ist die **einzige Quelle** für Projektkonventionen und gilt für jeden Agent,
-unabhängig vom Tool (Claude Code, Codex, …). `CLAUDE.md` importiert sie nur. Sie ist
-**vollständig** — ein Agent braucht kein Wissen aus anderen Projekten. Hier steht nur, was aus
-dem Code nicht ablesbar ist; Rezepte und Fallstricke stehen im Memory (`memory/MEMORY.md`).
+This file is the **single source** of project conventions and applies to every agent,
+regardless of tool (Claude Code, Codex, …). `CLAUDE.md` only imports it. It is **complete** —
+an agent needs no knowledge from other projects. It holds only what cannot be read from the
+code; recipes and pitfalls live in the memory (`memory/MEMORY.md`).
 
-## Projekt
-Eigenes Schnittprogramm für Trailer und Devlogs von Björns Spiel (Auslöser: Steam-Trailer).
-Kernidee ist die **Ghost-Timeline**: Clips wechseln auf einer Ausrichtungslinie zwischen zwei
-Spuren, jeder neue Clip setzt mit seiner Anfangskante an der Schnittkante des vorherigen an, und
-weggeschnittene Stücke bleiben ausgegraut als Überhang sichtbar. Dazu kommen eine Voice-Spur,
-Whisper-Transkription (lokal) als echter Text im Video, Voice-Bearbeitung (Kompressor, EQ, …)
-und Export in gängigen Qualitäten.
+## Project
+A video editor of our own for trailers and devlogs of Björn's game (trigger: the Steam trailer).
+The core idea is the **ghost timeline**: clips alternate between two lanes on one alignment
+line, each new clip starts with its leading edge exactly at the cut edge of the previous one, and
+trimmed-off parts stay visible as greyed-out overhangs. On top: a voice track, Whisper
+transcription (local) rendered as real text in the video, voice processing (compressor, EQ, …)
+and export in common qualities.
 
-## Tech-Stack (GC-1)
-- **C#/.NET 10 + Avalonia**, Windows zuerst, nichts Windows-Exklusives ohne Not.
-- Timeline ist ein eigenes, frei gezeichnetes Control — kein Standard-Widget.
-- Vorschau: Frames per ffmpeg-Bindings dekodieren und selbst rendern; Proxies als Ausweichweg.
-- Export über ffmpeg. Speech-to-Text über Whisper.net (whisper.cpp), lokal. Audio über NAudio.
-- Begründung und Annahmen stehen in GC-1.
+## Tech stack (GC-1)
+- **C#/.NET 10 + Avalonia**, Windows first, nothing Windows-exclusive without need.
+- The timeline is a custom, freely drawn control — not a stock widget.
+- Preview: decode frames via ffmpeg bindings and render them ourselves; proxies as fallback.
+- Export via ffmpeg. Speech-to-text via Whisper.net (whisper.cpp), local. Audio via NAudio.
+- Rationale and assumptions are in GC-1.
 
-## Sessionbeginn (Pflicht)
-1. Chat-Titel `GC-<Thema>` setzen, sobald das Thema aus Björns erster Nachricht klar ist
-   (Claude Desktop: `set_session_title`; kann das Tool keine Titel setzen, entfällt es).
-2. Der SessionStart-Hook (`tools/agent/session-start.sh`) holt `main` per `git pull --ff-only`,
-   wenn der Arbeitsbaum sauber ist, und meldet Branch und offene Änderungen. Andere Agents rufen
-   ihn von Hand auf.
-3. `memory/MEMORY.md` lesen (Claude Code lädt ihn automatisch, wenn eingerichtet — siehe Memory).
-4. Vor Ticketarbeit die obersten Einträge im Notion-**Journal** lesen.
+## Session start (mandatory)
+1. Set the chat title `GC-<topic>` as soon as the topic is clear from Björn's first message
+   (Claude Desktop: `set_session_title`; skip if the tool cannot set titles).
+2. The SessionStart hook (`tools/agent/session-start.sh`) fast-forwards `main` via
+   `git pull --ff-only` when the working tree is clean, and reports branch and pending changes.
+   Other agents run it by hand.
+3. Read `memory/MEMORY.md` (Claude Code loads it automatically once set up — see Memory).
+4. Before ticket work, read the latest entries in the Notion **journal**.
 
-## Versionierung (git + GitHub)
-- Öffentliches Repo `https://github.com/BjoernGit/ghostcut`, Default-Branch `main`.
-- **Code:** kleine Sachen direkt auf `main`, größere auf `feature/<name>`. Merge nach `main`
-  nur auf Björns Go (siehe Memory „Working with Björn“). Auf einem Feature-Branch bleiben, bis er
-  gemerged ist; ein Branch darf mehrere Tickets tragen.
-- **Doku und Memory** (`*.md` im Root, `memory/`) dürfen immer direkt auf `main` — als eigener
-  Commit, der nur diese Dateien enthält. Memory nie nur auf einem Feature-Branch liegen lassen.
-- Commits mit **expliziten Pfaden**, vorher `git status` lesen. Nach dem Commit muss
-  `git status --short` leer sein oder nur Bekanntes zeigen.
-- Commit-Mail ist die GitHub-noreply-Adresse (repo-lokal gesetzt) — nicht ändern.
-- **Keine Agent-Attribution** in Commits (keine `Co-Authored-By`-Zeilen, kein „Generated with“).
-- Gepusht wird nach jedem Commit, sofern Björn nichts anderes sagt.
+## Version control (git + GitHub)
+- Public repo `https://github.com/BjoernGit/ghostcut`, default branch `main`.
+- **Code:** small changes directly on `main`, larger ones on `feature/<name>`. Merge into `main`
+  only on Björn's go (see memory "Working with Björn"). Stay on a feature branch until it is
+  merged; one branch may carry several tickets.
+- **Docs and memory** (root `*.md`, `memory/`) may always go directly to `main` — as a separate
+  commit containing only those files. Never leave memory sitting only on a feature branch.
+- Commit with **explicit paths**, read `git status` first. After the commit, `git status --short`
+  must be empty or show only known items.
+- The commit email is the GitHub noreply address (set repo-locally) — do not change it.
+- **No agent attribution** in commits (no `Co-Authored-By` lines, no "Generated with").
+- Push after every commit unless Björn says otherwise.
 
-## Öffentlich heißt: nichts Privates (kritisch)
-- **Nie ins Repo:** Spielaufnahmen, Voice-Lines, Exporte (unveröffentlichtes Material),
-  Ghostcut-Projektdateien (absolute lokale Pfade), Whisper-Modelle, API-Keys, `.env`, lokale
-  MCP-/Agent-Konfiguration (`.claude/settings.local.json`, `.mcp.json`). Testmaterial liegt in
-  `media/` (ignoriert).
-- **Nie in Code, Doku oder Memory:** Mailadressen, Klarnamen außer „Björn“, Benutzerpfade
-  (`C:\Users\…`), Tokens, Notion-Inhalte aus anderen Projekten.
-- Taucht im `git status` eine Mediendatei oder etwas Geheimnisartiges auf: nicht committen,
-  `.gitignore` erweitern.
-- Braucht ein Test echte Mediendaten, erzeugt er sie zur Laufzeit (z. B. ffmpeg `testsrc`/`sine`).
-- GitHub Secret Scanning + Push Protection sind an. Ein geblockter Push heißt: Secret aus der
-  History entfernen, nicht umgehen.
-- Whisper läuft **lokal** — kein Cloud-Dienst, kein Key.
+## Public means: nothing private (critical)
+- **Never in the repo:** game footage, voice lines, exports (unreleased material), Ghostcut
+  project files (absolute local paths), Whisper models, API keys, `.env`, local MCP/agent
+  configuration (`.claude/settings.local.json`, `.mcp.json`). Test material lives in `media/`
+  (ignored).
+- **Never in code, docs or memory:** email addresses, real names other than "Björn", user paths
+  (`C:\Users\…`), tokens, Notion content from other projects.
+- If `git status` shows a media file or anything secret-like: do not commit, extend `.gitignore`.
+- A test that needs real media generates it at runtime (e.g. ffmpeg `testsrc`/`sine`).
+- GitHub secret scanning + push protection are on. A blocked push means: remove the secret from
+  the history, do not bypass.
+- Whisper runs **locally** — no cloud service, no key.
 
 ## Notion
-- **Hub:** https://www.notion.so/419b7847b9dd81198db0c5c16a9e3df4 („Ghostcut — Video Editor Hub“)
+- **Hub:** https://www.notion.so/419b7847b9dd81198db0c5c16a9e3df4 ("Ghostcut — Video Editor Hub")
 - **TODOs:** `collection://419b7847-b9dd-81d1-a552-000b0ec34c8f`, IDs `GC-N`.
-- **Journal:** https://www.notion.so/419b7847b9dd81538ff1cdbe068b7075 (Schreibregeln oben auf der
-  Seite, neuester Eintrag oben).
+- **Journal:** https://www.notion.so/419b7847b9dd81538ff1cdbe068b7075 (writing rules at the top of
+  the page, newest entry on top).
+- Notion content is written in **German** (Björn reads it there).
 
-### Projekt-Scope — NUR der Ghostcut-Hub (kritisch)
-Der Notion-Workspace enthält weitere Projekte, u. a. **„Lua - Coding Game“** (mit eigener
-TODOs-DB, Journal, Notes und „Rechner-Status“) und **„VRNinja“** (mit „Bug Tracker“). Deren
-Treffer sind für Ghostcut **nicht existent** — nie lesen, nie schreiben, nie zitieren.
-- `notion-search` immer mit `page_url: "419b7847b9dd81198db0c5c16a9e3df4"`.
-- Vor jedem Schreib- oder Referenzzugriff den `<ancestor-path>` prüfen: Er muss beim
-  Ghostcut-Hub enden. **Die IDs sehen in allen Projekten gleich aus** (`…7847b9dd…`) — nur der
-  Pfad zeigt, wohin eine Seite gehört.
-- Tickets gehören ausschließlich in die Ghostcut-TODOs oben. Eine DB namens „TODOs“ ohne
-  Ghostcut-Pfad gehört zu einem anderen Projekt.
-- `GC-N` per SQL auf `userDefined:ID` auflösen, nie die nackte Nummer semantisch suchen
-  (Rezept im Memory).
+### Project scope — ONLY the Ghostcut hub (critical)
+The Notion workspace contains other projects, among them **"Lua - Coding Game"** (with its own
+TODOs database, journal, notes and "Rechner-Status") and **"VRNinja"** (with a "Bug Tracker").
+Their results **do not exist** for Ghostcut — never read, write or cite them.
+- Always call `notion-search` with `page_url: "419b7847b9dd81198db0c5c16a9e3df4"`.
+- Before any write or reference, check the `<ancestor-path>`: it must end at the Ghostcut hub.
+  **IDs look the same across all projects** (`…7847b9dd…`) — only the path tells where a page
+  belongs.
+- Tickets go exclusively into the Ghostcut TODOs above. A database called "TODOs" without a
+  Ghostcut path belongs to another project.
+- Resolve `GC-N` via SQL on `userDefined:ID`, never search the bare number semantically
+  (recipe in memory).
 
-### Ticket-Arbeitsregeln
-- Start: Status = „In Progress“. Bei Abbruch zurück auf den vorherigen Status.
-- Fertig: „Review“, wenn Björn etwas prüfen soll; „Done“ nach seiner Abnahme. Ein Merge-Auftrag
-  **ist** die Abnahme: zuerst „Done“, dann mergen, dann Journal-Eintrag.
-- Ablehnen über **„Won't Do“** — nie löschen.
-- **Keine unaufgeforderten Tickets oder Doc-Seiten.** Folgeideen im Chat ansprechen.
-- **Inbox:** Konkrete Beobachtungen, die Björn nebenbei nennt (Bug, „fühlt sich komisch an“,
-  „das fehlt“), notiert der Agent **ohne Rückfrage** — **ein Eintrag pro Gespräch**: Titel
-  `Notizen YYYY-MM-DD — <Thema>`, Status „Inbox“, jede Beobachtung ein Stichpunkt mit seinem
-  Zitat, keine Ausarbeitung. Nicht in die Inbox: Fragen, was in der Session gleich erledigt
-  wird, was schon ein Ticket hat (dort ergänzen). Kurzbefehle: „ins Inbox“ / „nicht notieren“.
-  Jede Antwort, die etwas notiert hat, endet mit `→ Inbox: <Titel> (+N)`. Agents nehmen Inbox
-  nie selbst; Tickets daraus schneiden Björn und ein Agent gemeinsam, danach geht der Eintrag auf
-  „Won't Do“ mit Verweis auf die Tickets.
-- Nach einer Änderung, die eine Aussage im Hub oder in einem Ticket ungültig macht: dort
-  korrigieren.
+### Ticket rules
+- Start: Status = "In Progress". On abort, back to the previous status.
+- Finished: "Review" when Björn should check something; "Done" after his sign-off. A merge order
+  **is** the sign-off: set "Done" first, then merge, then write the journal entry.
+- Reject via **"Won't Do"** — never delete.
+- **No unrequested tickets or doc pages.** Raise follow-up ideas in the chat.
+- **Inbox:** concrete observations Björn mentions in passing (a bug, "fühlt sich komisch an",
+  "das fehlt") are noted by the agent **without asking** — **one entry per conversation**: title
+  `Notizen YYYY-MM-DD — <Thema>`, status "Inbox", each observation one bullet with his quote, no
+  elaboration. Not for the inbox: questions, anything done in the same session, anything that
+  already has a ticket (add it there). His shortcuts: "ins Inbox" / "nicht notieren". Every reply
+  that noted something ends with `→ Inbox: <title> (+N)`. Agents never pick up inbox entries on
+  their own; Björn and an agent cut tickets from them together, then the entry goes to
+  "Won't Do" with links to the tickets.
+- When a change invalidates a statement on the hub or in a ticket: correct it there.
 
-### Wissen gehört nach Notion
-**Der Chat ist kein Speicher.** Design, Entscheidungen, wie ein System funktioniert und
-Messwerte gehören nach Notion (Hub-Unterseite oder Ticket) und werden dort aktuell gehalten.
-Abgeschlossene Arbeit kommt ins Journal. Ins Memory nur, was der Abschnitt Memory erlaubt.
+### Knowledge belongs in Notion
+**The chat is not storage.** Design, decisions, how a system works and measurements belong in
+Notion (a hub subpage or a ticket) and are kept current there. Finished work goes into the
+journal. Only what the Memory section allows goes into memory.
 
-## Memory (`memory/` im Repo)
-- Agent-Werkzeug: Tool-Fallen, Rezepte, Arbeitsregeln — **kein Projektwissen** (das ist Notion)
-  und nichts, was aus dem Code lesbar ist.
-- `memory/MEMORY.md` ist der Index (eine Zeile pro Notiz, keine Inhalte); Einzeldateien mit
-  Frontmatter `name`, `description`, `metadata.type` (`user | feedback | project | reference`),
-  Verweise als `[[name]]`.
-- **Neues Memory nur mit Björns OK** — vorher kurz fragen. Bestehende Notizen korrigieren statt
-  Dubletten anlegen; falsche löschen.
-- Öffentlich: gleiche Regeln wie oben (keine persönlichen Daten, keine Benutzerpfade).
-- Änderungen sofort committen und pushen, direkt auf `main`.
-- **Claude Code einrichten** (einmal pro Rechner, nicht im Repo): in
-  `.claude/settings.local.json` `"autoMemoryDirectory"` auf den absoluten Pfad von `memory/`
-  setzen. Dann lädt Claude Code den Index automatisch und schreibt Notizen dorthin. Der Hook
-  warnt, wenn das fehlt.
+## Memory (`memory/` in the repo)
+- Agent tooling: tool pitfalls, recipes, working rules — **no project knowledge** (that is
+  Notion) and nothing readable from the code.
+- `memory/MEMORY.md` is the index (one line per note, no content); single files carry frontmatter
+  `name`, `description`, `metadata.type` (`user | feedback | project | reference`), links as
+  `[[name]]`.
+- **New memory only with Björn's OK** — ask briefly first. Correct existing notes instead of
+  creating duplicates; delete wrong ones.
+- Public: same rules as above (no personal data, no user paths).
+- Commit and push changes right away, directly on `main`.
+- **Claude Code setup** (once per machine, not in the repo): in `.claude/settings.local.json` set
+  `"autoMemoryDirectory"` to the absolute path of `memory/`. Claude Code then loads the index
+  automatically and writes notes there. The hook warns when it is missing.
 
-## Zusammenarbeit mit Björn
-- „Wäre es möglich…?“ / „Könnte man…?“ sind **Machbarkeitsfragen**, keine Aufträge. Erst
-  diskutieren, dann auf explizites Go umsetzen. Details der Umsetzung danach selbst entscheiden
-  und als Annahme benennen (Memory „Working with Björn“).
-- **Björn testet selbst**, wie sich Schnitt, Vorschau und Bedienung anfühlen. Agents prüfen
-  Mechanik (läuft es, stimmt die Ausgabe, wirft es Fehler) — z. B. per Screenshot der App oder
-  ffprobe auf einen Export. Ein Screenshot ersetzt nicht Björns Test.
-- Kurz sagen, was gerade passiert, statt stumm zu arbeiten. Längere Arbeit endet mit TL;DR.
-- Rückfragen im Fließtext, eine Frage auf einmal, keine Multiple-Choice-Abfragen.
+## Working with Björn
+- Talk to Björn in **German**.
+- "Wäre es möglich…?" / "Könnte man…?" are **feasibility questions**, not orders. Discuss first,
+  implement on an explicit go. After the go, decide implementation details yourself and name
+  them as assumptions (memory "Working with Björn").
+- **Björn tests himself** how cutting, preview and handling feel. Agents check mechanics (does it
+  run, is the output right, does it throw) — e.g. via an app screenshot or ffprobe on an export.
+  A screenshot does not replace Björn's test.
+- Say briefly what is happening instead of working silently. Longer work ends with a TL;DR.
+- Questions as plain text, one at a time, no multiple-choice prompts.
 
-## Code Style
-- Kommentare, Bezeichner und Commit-Messages auf Englisch. UI-Texte vorerst Englisch.
-- Gesprochen wird mit Björn auf Deutsch.
+## Code style
+- Comments, identifiers and commit messages in English. UI texts in English for now.
 
-## Architektur
-- **Qualität vor Quick-and-dirty**, das Projekt soll wachsen können: klare Trennung von
-  Timeline-Modell, Rendering/Vorschau, Audio und Export; designer-tunbare Werte statt
-  Magic Numbers. Shortcuts nur mit Björns Zustimmung und Folge-Ticket.
-- Fällt beim Arbeiten eine bessere Architektur auf: kurz vorschlagen (Problem, besserer Aufbau,
-  Trade-off), dann gemeinsam entscheiden — gleich umsetzen oder als Ticket festhalten.
-  **Nie still liegen lassen.**
+## Architecture
+- **Quality over quick-and-dirty**, the project should be able to grow: clean separation of
+  timeline model, rendering/preview, audio and export; tunable values instead of magic numbers.
+  Shortcuts only with Björn's consent and a follow-up ticket.
+- If a better architecture becomes apparent while working: propose it briefly (problem, better
+  structure, trade-off), then decide together — implement right away or record it as a ticket.
+  **Never leave it unmentioned.**

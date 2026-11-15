@@ -1,6 +1,6 @@
 # Ghostcut — Claude Code Entry Point
 
-Die Projektkonventionen sind toolagnostisch und stehen in `AGENTS.md`.
-Diese Datei importiert sie nur — **nichts hier direkt pflegen**.
+The project conventions are tool-agnostic and live in `AGENTS.md`.
+This file only imports them — **do not maintain anything here directly**.
 
 @AGENTS.md
