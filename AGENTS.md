@@ -113,8 +113,13 @@ journal. Only what the Memory section allows goes into memory.
 ## Working with Björn
 - Talk to Björn in **German**.
 - "Wäre es möglich…?" / "Könnte man…?" are **feasibility questions**, not orders. Discuss first,
-  implement on an explicit go. After the go, decide implementation details yourself and name
-  them as assumptions (memory "Working with Björn").
+  implement on an explicit go.
+- **Speed over consultation** (Björn, 2026-11-15): after a go, work like an autonomous agent —
+  decide and build, report the decisions afterwards. Ask first **only** if a choice could be
+  seriously different from what Björn probably expects (e.g. it changes how the ghost timeline
+  behaves, or is costly to undo). Concerns are no reason to stop: pick the better option, build
+  it, and flag it in the report. Björn corrects afterwards. Every report ends with
+  `Entscheidungen:` / `Annahmen:` (memory "Working with Björn").
 - **Björn tests himself** how cutting, preview and handling feel. Agents check mechanics (does it
   run, is the output right, does it throw) — e.g. via an app screenshot or ffprobe on an export.
   A screenshot does not replace Björn's test.

@@ -9,12 +9,12 @@ Carried over from the Lua Coding Game project, where these rules grew from real 
 
 **A question is not a go.** "Wäre es möglich…?", "kann man…?", "geht das…?" ask for a discussion: feasibility, cleanest approach, main trade-off, then stop. Verification questions ("hat das gerade keinen Effekt, oder?") get an answer, not a change. Imperatives ("mach", "leg los", "setz es um") are a go.
 
-**Once there is a go, decide details yourself.** Test: *does the choice shape a substantial part of the feature, or is it expensive to undo?*
-- No (naming, placement, defaults, which of two equivalent APIs, test layout, small refactors) → decide, name the assumption in one line while working and again under `Annahmen:` in the report. An unnamed assumption counts as concealed.
-- Yes (architecture direction, project file format, rework across many files, the core of a taste feature such as how the ghost timeline feels) → ask **before** implementing.
-- Unsure → it usually isn't load-bearing.
+**Once there is a go, decide yourself — Ghostcut runs in autonomous mode** (Björn, 2026-11-15: "mit Kleinigkeiten brauchst du mich gar nicht behelligen … mach einfach mal und schreib mir später deine Entscheidungen", like the unattended agents in his other project). He wants the fastest route to a working result and corrects afterwards.
+- Decide and build, also for mid-sized design choices (defaults, UI details, file layout, library picks, behaviour Björn did not specify). Name each decision in one line while working and again under `Entscheidungen:` / `Annahmen:` in the report. An unnamed assumption counts as concealed.
+- Ask **before** implementing only when a choice could be seriously different from what Björn probably expects — it changes how the ghost timeline behaves, or it is costly to undo.
+- Concerns are not a stop sign: take the better option, build it, flag it.
 
-**Why:** Björn switches between several agents; every needless question costs a context switch.
+**Why:** every needless question stalls the work; Björn switches between several agents.
 
 **Questions as plain text**, one load-bearing question, recommendation + trade-off in two lines. No multiple-choice forms.
 
