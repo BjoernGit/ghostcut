@@ -1,0 +1,78 @@
+# ------------------------------------------------------------------
+# Ghostcut — public repo. Nothing private, nothing unreleased.
+# ------------------------------------------------------------------
+
+# --- Media: game footage, voice lines, exports (unreleased material) ---
+# Local test material lives in media/ and never leaves this machine.
+media/
+exports/
+renders/
+*.mp4
+*.mov
+*.mkv
+*.avi
+*.webm
+*.m4v
+*.wav
+*.mp3
+*.flac
+*.ogg
+*.m4a
+*.aac
+*.opus
+
+# --- Ghostcut project files (contain absolute paths to local media) ---
+*.ghostcut
+*.ghostcut.bak
+autosave/
+
+# --- Whisper / ML models (large binaries, downloaded at runtime) ---
+models/
+*.bin
+*.gguf
+*.ggml
+*.onnx
+*.pt
+*.safetensors
+
+# --- Secrets and machine-local config ---
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.pfx
+*.p12
+secrets/
+.mcp.json
+.codex/
+.claude/settings.local.json
+
+# --- Build output and dependencies ---
+bin/
+obj/
+dist/
+build/
+out/
+target/
+node_modules/
+.venv/
+venv/
+__pycache__/
+*.pyc
+
+# --- Caches (thumbnails, waveforms, proxies) ---
+.cache/
+cache/
+proxies/
+*.log
+
+# --- Editor / OS ---
+.vs/
+.vscode/
+.idea/
+*.user
+*.suo
+Thumbs.db
+Desktop.ini
+.DS_Store
