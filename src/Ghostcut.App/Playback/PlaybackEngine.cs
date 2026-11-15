@@ -64,7 +64,7 @@ public sealed class PlaybackEngine : IDisposable
         {
             if (!IsPlaying)
                 return _startTime;
-            if (_output != null)
+            if (_output != null && OperatingSystem.IsWindows())
             {
                 var bytes = _output.GetPosition();
                 var seconds = bytes / (double)_output.OutputWaveFormat.AverageBytesPerSecond;
@@ -80,7 +80,8 @@ public sealed class PlaybackEngine : IDisposable
         _startTime = from;
         _mixer.Update(project);
         StartPicture(project, from);
-        if (!_audioOutput)
+        // NAudio's WaveOut is Windows-only; elsewhere the preview runs silently on a stopwatch.
+        if (!_audioOutput || !OperatingSystem.IsWindows())
         {
             _fallbackClock.Restart();
             IsPlaying = true;
@@ -111,7 +112,7 @@ public sealed class PlaybackEngine : IDisposable
             _startTime = Position;
         IsPlaying = false;
         _fallbackClock.Reset();
-        if (_output != null)
+        if (_output != null && OperatingSystem.IsWindows())
         {
             _output.Stop();
             _output.Dispose();
