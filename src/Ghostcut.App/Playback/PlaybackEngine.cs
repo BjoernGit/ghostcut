@@ -41,10 +41,14 @@ public sealed class PlaybackEngine : IDisposable
     private Channel<VideoFrame>? _frames;
     private CancellationTokenSource? _pumpCancel;
 
-    public PlaybackEngine(IPcmProvider pcm, Ffmpeg? ffmpeg)
+    private readonly bool _audioOutput;
+
+    /// <param name="audioOutput">False runs the clock on a stopwatch without opening a sound device (tests).</param>
+    public PlaybackEngine(IPcmProvider pcm, Ffmpeg? ffmpeg, bool audioOutput = true)
     {
         _mixer = new AudioMixer(pcm);
         _ffmpeg = ffmpeg;
+        _audioOutput = audioOutput;
     }
 
     public bool IsPlaying { get; private set; }
@@ -76,6 +80,12 @@ public sealed class PlaybackEngine : IDisposable
         _startTime = from;
         _mixer.Update(project);
         StartPicture(project, from);
+        if (!_audioOutput)
+        {
+            _fallbackClock.Restart();
+            IsPlaying = true;
+            return;
+        }
         try
         {
             _provider = new MixSampleProvider(_mixer, AudioFormat.ToFrames(from));

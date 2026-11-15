@@ -34,13 +34,19 @@ public partial class MainWindow : Window
     private bool _closeConfirmed;
 
     public MainWindow()
+        : this(audioOutput: true)
+    {
+    }
+
+    /// <param name="audioOutput">False plays without opening a sound device (headless tests).</param>
+    internal MainWindow(bool audioOutput)
     {
         InitializeComponent();
         _frame = new WriteableBitmap(
             new PixelSize(PlaybackEngine.PreviewSize.Width, PlaybackEngine.PreviewSize.Height),
             new Vector(96, 96), PixelFormat.Bgra8888, AlphaFormat.Opaque);
         PreviewImage.Source = _frame;
-        _playback = new PlaybackEngine(_session.Pcm ?? (Core.Audio.IPcmProvider)new NoPcm(), _session.Ffmpeg);
+        _playback = new PlaybackEngine(_session.Pcm ?? (Core.Audio.IPcmProvider)new NoPcm(), _session.Ffmpeg, audioOutput);
         if (_session.Ffmpeg != null)
         {
             _scrub = new ScrubDecoder(_session.Ffmpeg, PlaybackEngine.PreviewSize);
@@ -237,6 +243,11 @@ public partial class MainWindow : Window
     /// <summary>Test hook: number of decoded scrub frames shown.</summary>
     internal int PreviewFramesShown { get; private set; }
 
+    /// <summary>Test hook: number of frames shown during playback.</summary>
+    internal int PlaybackFramesShown { get; private set; }
+
+    internal bool IsPlaying => _playback.IsPlaying;
+
     private void ShowPixels(byte[] pixels)
     {
         using (var buffer = _frame.Lock())
@@ -309,6 +320,7 @@ public partial class MainWindow : Window
         var frame = _playback.TakeFrame(position);
         if (frame != null)
         {
+            PlaybackFramesShown++;
             ShowPixels(frame.Pixels);
             _playback.Recycle(frame);
         }

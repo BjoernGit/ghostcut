@@ -112,7 +112,7 @@ public sealed class MainWindowTests : IDisposable
         var b = await Make(ffmpeg!, "b.mp4", 4, 661, video: true);
         var music = await Make(ffmpeg!, "music.wav", 8, 223, video: false);
 
-        var window = new MainWindow { Width = 1400, Height = 900 };
+        var window = new MainWindow(audioOutput: false) { Width = 1400, Height = 900 };
         window.Show();
         var session = window.Session;
         var timeline = window.FindControl<TimelineControl>("Timeline")!;
@@ -180,6 +180,18 @@ public sealed class MainWindowTests : IDisposable
             window.KeyPress(Key.Y, RawInputModifiers.Control, PhysicalKey.Y, "y");
         await Settle();
         Assert.Equal(3, project.Main.Clips.Count);
+
+        // 7) Play across the cuts at 1 s and 3 s: the playhead runs and decoded frames keep coming.
+        session.Playhead = S(0.5);
+        window.KeyPress(Key.Space, RawInputModifiers.None, PhysicalKey.Space, " ");
+        await Settle(() => session.Playhead > S(3.3), timeoutMs: 8000);
+        Assert.True(window.IsPlaying);
+        Assert.True(session.Playhead > S(3.3), $"playhead only reached {session.Playhead}");
+        Assert.True(window.PlaybackFramesShown >= 45, $"only {window.PlaybackFramesShown} frames shown in ~2.8 s");
+        Capture(window, "04-playing.png");
+        window.KeyPress(Key.Space, RawInputModifiers.None, PhysicalKey.Space, " ");
+        await Settle();
+        Assert.False(window.IsPlaying);
 
         session.History.MarkSaved(); // no unsaved-changes prompt on close
         window.Close();

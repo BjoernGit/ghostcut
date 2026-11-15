@@ -11,16 +11,42 @@ A small video editor built for cutting game trailers and devlogs.
 
 ## Status
 
-Early planning. Nothing to run yet.
+First usable version: import, ghost timeline, voice/music tracks, preview, undo/redo, save/load and MP4 export.
+
+- Drag-and-drop import of video and audio files
+- Ghost chain: clips alternate between lanes, trimmed parts stay as greyed-out overhangs, ripple is always on, reorder by dragging, split at the playhead, snapping with a visible line
+- Voice and music tracks with freely placed clips, per-clip volume, track mute
+- Automatic anti-click fades at every audio edge (10 ms, crossfading from overhang material at cuts)
+- Fade from/to black per clip
+- Preview with synced sound and scrubbing
+- Projects as readable JSON (`.ghostcut`), autosave
+- MP4 export (H.264 + AAC) with presets: Steam trailer (1080p60), 1080p60, 1080p30, draft 720p30
 
 ## Planned
 
-- Drag-and-drop import of clips (video + game audio)
-- Ghost timeline (alternating lanes, visible trims)
-- Voice-line track with recording
+- Transitions between video clips, title cards
+- Voice-line recording and voice processing (compressor, EQ, noise gate, …)
 - Local speech-to-text (Whisper) → editable captions in the video
-- Voice processing (compressor, EQ, noise gate, …)
-- Export in common qualities (e.g. Steam trailer presets)
+
+## Running
+
+Needs the .NET 10 SDK and ffmpeg (with ffprobe). Ghostcut finds ffmpeg on `PATH`, in the winget package
+folder, or in the folder named by `GHOSTCUT_FFMPEG`.
+
+```
+winget install --id Gyan.FFmpeg.Essentials -e
+dotnet run --project src/Ghostcut.App
+dotnet test
+```
+
+Caches and the autosave live in `%LOCALAPPDATA%\Ghostcut` (override with `GHOSTCUT_DATA_DIR`).
+
+## Layout
+
+- `src/Ghostcut.Core` — timeline model, edit commands (undo/redo), project format, audio mix. No UI.
+- `src/Ghostcut.Media` — ffmpeg/ffprobe: probing, audio decoding cache, preview frames, export.
+- `src/Ghostcut.App` — Avalonia desktop app.
+- `tests/` — model tests, export integration tests and a headless UI test (the latter two generate their media with ffmpeg and are skipped without it).
 
 ## Privacy
 
