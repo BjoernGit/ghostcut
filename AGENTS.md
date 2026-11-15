@@ -11,7 +11,12 @@ Spuren, jeder neue Clip setzt an der Schnittkante des vorherigen an, und weggesc
 bleiben ausgegraut als Überhang sichtbar. Dazu eine Voice-Spur, Whisper-Transkription
 (lokal) als echter Text im Video, Voice-Bearbeitung und Export.
 
-Tech-Stack: **noch offen** — erste Entscheidung im Board.
+## Tech-Stack (GC-1)
+- **C#/.NET 10 + Avalonia**, Windows zuerst, nichts Windows-Exklusives ohne Not.
+- Timeline ist ein eigenes, frei gezeichnetes Control — kein Standard-Widget.
+- Vorschau: Frames per ffmpeg-Bindings dekodieren und selbst rendern; Proxies als Ausweichweg.
+- Export über ffmpeg. Speech-to-Text über Whisper.net (whisper.cpp), lokal. Audio über NAudio.
+- Begründung und Annahmen stehen in GC-1.
 
 Ghostcut ist ein **eigenständiges Projekt**. Die Regeln des Lua-Repos (Plastic, Unity, MCP-Ports,
 Auto-Agents, Lua-Memory) gelten hier **nicht**.
