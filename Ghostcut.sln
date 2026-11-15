@@ -15,6 +15,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{0AB3BF05
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ghostcut.Core.Tests", "tests\Ghostcut.Core.Tests\Ghostcut.Core.Tests.csproj", "{4577A507-148B-4150-AD66-FE528132C435}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ghostcut.App.Tests", "tests\Ghostcut.App.Tests\Ghostcut.App.Tests.csproj", "{826A106A-627A-4A38-93D8-F6B8513666F0}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -73,6 +75,18 @@ Global
 		{4577A507-148B-4150-AD66-FE528132C435}.Release|x64.Build.0 = Release|Any CPU
 		{4577A507-148B-4150-AD66-FE528132C435}.Release|x86.ActiveCfg = Release|Any CPU
 		{4577A507-148B-4150-AD66-FE528132C435}.Release|x86.Build.0 = Release|Any CPU
+		{826A106A-627A-4A38-93D8-F6B8513666F0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{826A106A-627A-4A38-93D8-F6B8513666F0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{826A106A-627A-4A38-93D8-F6B8513666F0}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{826A106A-627A-4A38-93D8-F6B8513666F0}.Debug|x64.Build.0 = Debug|Any CPU
+		{826A106A-627A-4A38-93D8-F6B8513666F0}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{826A106A-627A-4A38-93D8-F6B8513666F0}.Debug|x86.Build.0 = Debug|Any CPU
+		{826A106A-627A-4A38-93D8-F6B8513666F0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{826A106A-627A-4A38-93D8-F6B8513666F0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{826A106A-627A-4A38-93D8-F6B8513666F0}.Release|x64.ActiveCfg = Release|Any CPU
+		{826A106A-627A-4A38-93D8-F6B8513666F0}.Release|x64.Build.0 = Release|Any CPU
+		{826A106A-627A-4A38-93D8-F6B8513666F0}.Release|x86.ActiveCfg = Release|Any CPU
+		{826A106A-627A-4A38-93D8-F6B8513666F0}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -82,5 +96,6 @@ Global
 		{335E5561-B1B6-4064-93DC-6C6C7F674BB3} = {827E0CD3-B72D-47B6-A68D-7590B98EB39B}
 		{CB20B955-8410-42AF-A382-1ADCD8B918F8} = {827E0CD3-B72D-47B6-A68D-7590B98EB39B}
 		{4577A507-148B-4150-AD66-FE528132C435} = {0AB3BF05-4346-4AA6-1389-037BE0695223}
+		{826A106A-627A-4A38-93D8-F6B8513666F0} = {0AB3BF05-4346-4AA6-1389-037BE0695223}
 	EndGlobalSection
 EndGlobal

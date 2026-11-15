@@ -1,0 +1,23 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="Ghostcut.App.ExportWindow"
+        Title="Export MP4"
+        Width="560" SizeToContent="Height" CanResize="False"
+        WindowStartupLocation="CenterOwner" ShowInTaskbar="False">
+  <StackPanel Margin="16" Spacing="10">
+    <TextBlock Text="Preset" FontSize="12" />
+    <ComboBox x:Name="PresetBox" HorizontalAlignment="Stretch" />
+    <TextBlock x:Name="PresetInfo" FontSize="11" Foreground="#9DA1A8" TextWrapping="Wrap" />
+    <TextBlock Text="Output file" FontSize="12" />
+    <Grid ColumnDefinitions="*,Auto">
+      <TextBox x:Name="OutputBox" />
+      <Button Grid.Column="1" Content="Browse…" Margin="6,0,0,0" Click="OnBrowse" />
+    </Grid>
+    <ProgressBar x:Name="Progress" Minimum="0" Maximum="1" Height="8" Margin="0,6,0,0" />
+    <TextBlock x:Name="StatusText" FontSize="12" Foreground="#B8BCC4" TextWrapping="Wrap" />
+    <StackPanel Orientation="Horizontal" Spacing="8" HorizontalAlignment="Right">
+      <Button x:Name="StartButton" Content="Export" MinWidth="90" Click="OnStart" />
+      <Button x:Name="CancelButton" Content="Close" MinWidth="90" Click="OnCancel" />
+    </StackPanel>
+  </StackPanel>
+</Window>

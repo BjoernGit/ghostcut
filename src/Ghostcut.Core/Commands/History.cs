@@ -132,6 +132,9 @@ public sealed class History
         _savedTopValid = true;
     }
 
+    /// <summary>Marks the project as differing from any file (e.g. after recovering an autosave).</summary>
+    public void MarkUnsaved() => _savedTopValid = false;
+
     private void Push(IEditCommand command)
     {
         _undo.Add(command);

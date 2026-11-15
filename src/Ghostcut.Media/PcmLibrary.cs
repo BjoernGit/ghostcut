@@ -26,8 +26,7 @@ public sealed class PcmLibrary : IPcmProvider, IDisposable
         Directory.CreateDirectory(cacheDirectory);
     }
 
-    public static string DefaultCacheDirectory =>
-        Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Ghostcut", "cache", "pcm");
+    public static string DefaultCacheDirectory => AppPaths.PcmCache;
 
     /// <summary>Raised (on a worker thread) when a source's audio became available.</summary>
     public event Action<Guid>? Loaded;
